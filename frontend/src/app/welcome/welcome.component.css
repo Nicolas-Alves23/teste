@@ -1,0 +1,104 @@
+:host {
+  display: block;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.tela {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1.25rem;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(26, 115, 232, 0.08), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(26, 115, 232, 0.06), transparent 45%),
+    #f4f5f7;
+}
+
+.cartao {
+  max-width: 460px;
+  width: 100%;
+  background: #fff;
+  border: 1px solid #e6e8eb;
+  border-radius: 16px;
+  padding: 2.75rem 2.25rem;
+  box-shadow: 0 20px 45px -25px rgba(20, 30, 45, 0.35);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0.75rem;
+}
+
+.icone {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #eaf1fd;
+  color: #1a73e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.eyebrow {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a73e8;
+}
+
+h1 {
+  margin: 0;
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #17202a;
+}
+
+.descricao {
+  margin: 0;
+  color: #5b6472;
+  font-size: 0.98rem;
+  line-height: 1.6;
+}
+
+.btn-cta {
+  margin-top: 0.75rem;
+  width: 100%;
+  padding: 0.85rem 1.5rem;
+  border: none;
+  border-radius: 10px;
+  background: #1a73e8;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, transform 0.1s ease;
+}
+
+.btn-cta:hover {
+  background: #1662c4;
+}
+
+.btn-cta:active {
+  transform: translateY(1px);
+}
+
+.opcao {
+  margin-top: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: #5b6472;
+  cursor: pointer;
+}
+
+.opcao input {
+  width: 16px;
+  height: 16px;
+  accent-color: #1a73e8;
+  cursor: pointer;
+}

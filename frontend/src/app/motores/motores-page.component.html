@@ -1,0 +1,102 @@
+<main class="container">
+  <header class="topo">
+    <div class="titulo">
+      <a class="voltar" routerLink="/">← Início</a>
+      <h1>Cadastro de Motores Elétricos</h1>
+    </div>
+    <button type="button" class="btn primario" (click)="abrirFormularioNovo()" *ngIf="!mostrarFormulario">
+      + Novo motor
+    </button>
+  </header>
+
+  <div class="alerta sucesso" *ngIf="mensagemSucesso">{{ mensagemSucesso }}</div>
+  <div class="alerta erro" *ngIf="mensagemErroGeral">
+    {{ mensagemErroGeral }}
+    <button type="button" class="fechar" (click)="mensagemErroGeral = null">×</button>
+  </div>
+
+  <app-motor-form
+    *ngIf="mostrarFormulario"
+    [motor]="motorEmEdicao"
+    [fabricantes]="fabricantes"
+    [salvando]="salvando"
+    [erroCodigoDuplicado]="erroCodigoDuplicado"
+    [errosServidor]="errosServidor"
+    (salvar)="salvarMotor($event)"
+    (cancelar)="fecharFormulario()"
+  ></app-motor-form>
+
+  <section class="busca">
+    <input
+      type="text"
+      placeholder="Buscar por código ou modelo..."
+      [value]="termoBusca"
+      (input)="onBuscar($any($event.target).value)"
+    />
+  </section>
+
+  <section class="tabela-wrapper">
+    <div class="estado" *ngIf="carregando">Carregando...</div>
+
+    <table *ngIf="!carregando && motores.length > 0">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Modelo</th>
+          <th>Fabricante</th>
+          <th>Potência (CV)</th>
+          <th>Tensão</th>
+          <th>Freq. (Hz)</th>
+          <th>Polos</th>
+          <th>Rotação (RPM)</th>
+          <th>Carcaça</th>
+          <th>Grau proteção</th>
+          <th>Preço (R$)</th>
+          <th>Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let motor of motores">
+          <td>{{ motor.codigo }}</td>
+          <td>{{ motor.modelo }}</td>
+          <td>{{ motor.fabricante_nome }}</td>
+          <td>{{ motor.potencia_cv }}</td>
+          <td>{{ motor.tensao }}</td>
+          <td>{{ motor.frequencia_hz }}</td>
+          <td>{{ motor.polos }}</td>
+          <td>{{ motor.rotacao_rpm }}</td>
+          <td>{{ motor.carcaca || '-' }}</td>
+          <td>{{ motor.grau_protecao || '-' }}</td>
+          <td>{{ motor.preco != null ? (motor.preco | number: '1.2-2') : '-' }}</td>
+          <td class="acoes-tabela">
+            <button type="button" class="link" (click)="abrirFormularioEdicao(motor)">Editar</button>
+            <button type="button" class="link perigo" (click)="pedirConfirmacaoExclusao(motor)">
+              Excluir
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="estado" *ngIf="!carregando && motores.length === 0">
+      Nenhum motor encontrado.
+    </div>
+  </section>
+
+  <div class="modal-fundo" *ngIf="motorParaExcluir">
+    <div class="modal">
+      <p>
+        Tem certeza que deseja excluir o motor
+        <strong>{{ motorParaExcluir.codigo }} - {{ motorParaExcluir.modelo }}</strong>?
+      </p>
+      <div class="acoes">
+        <button type="button" class="btn secundario" (click)="cancelarExclusao()" [disabled]="excluindo">
+          Cancelar
+        </button>
+        <button type="button" class="btn perigo" (click)="confirmarExclusao()" [disabled]="excluindo">
+          {{ excluindo ? 'Excluindo...' : 'Excluir' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</main>
