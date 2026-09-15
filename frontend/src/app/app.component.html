@@ -8,6 +8,7 @@
 
   <app-motor-form
     *ngIf="mostrarFormulario"
+    [motor]="motorEmEdicao"
     [fabricantes]="fabricantes"
     [salvando]="salvando"
     (salvar)="salvarMotor($event)"
@@ -40,6 +41,7 @@
           <th>Carcaça</th>
           <th>Grau proteção</th>
           <th>Preço (R$)</th>
+          <th>Ações</th>
         </tr>
       </thead>
       <tbody>
@@ -55,6 +57,9 @@
           <td>{{ motor.carcaca || '-' }}</td>
           <td>{{ motor.grau_protecao || '-' }}</td>
           <td>{{ motor.preco != null ? (motor.preco | number: '1.2-2') : '-' }}</td>
+          <td class="acoes-tabela">
+            <button type="button" class="link" (click)="abrirFormularioEdicao(motor)">Editar</button>
+          </td>
         </tr>
       </tbody>
     </table>

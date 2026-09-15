@@ -1,5 +1,5 @@
 <div class="form-card">
-  <h2>Novo motor</h2>
+  <h2>{{ editando ? 'Editar motor' : 'Novo motor' }}</h2>
 
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <div class="grid">

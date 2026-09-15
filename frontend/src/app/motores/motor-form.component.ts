@@ -1,8 +1,15 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnChanges,
+  Output,
+  SimpleChanges,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Fabricante } from '../core/models/fabricante.model';
-import { MotorPayload } from '../core/models/motor.model';
+import { Motor, MotorPayload } from '../core/models/motor.model';
 
 const FREQUENCIAS = [50, 60];
 const POLOS = [2, 4, 6, 8];
@@ -14,7 +21,8 @@ const POLOS = [2, 4, 6, 8];
   templateUrl: './motor-form.component.html',
   styleUrl: './motor-form.component.css',
 })
-export class MotorFormComponent {
+export class MotorFormComponent implements OnChanges {
+  @Input() motor: Motor | null = null;
   @Input() fabricantes: Fabricante[] = [];
   @Input() salvando = false;
 
@@ -39,6 +47,32 @@ export class MotorFormComponent {
   });
 
   constructor(private readonly fb: FormBuilder) {}
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['motor']) {
+      this.preencherFormulario(this.motor);
+    }
+  }
+
+  get editando(): boolean {
+    return this.motor !== null;
+  }
+
+  private preencherFormulario(motor: Motor | null): void {
+    this.form.reset({
+      codigo: motor?.codigo ?? '',
+      modelo: motor?.modelo ?? '',
+      fabricante_id: motor?.fabricante_id ?? null,
+      potencia_cv: motor?.potencia_cv ?? null,
+      tensao: motor?.tensao ?? '',
+      frequencia_hz: motor?.frequencia_hz ?? null,
+      polos: motor?.polos ?? null,
+      rotacao_rpm: motor?.rotacao_rpm ?? null,
+      carcaca: motor?.carcaca ?? '',
+      grau_protecao: motor?.grau_protecao ?? '',
+      preco: motor?.preco ?? null,
+    });
+  }
 
   onSubmit(): void {
     if (this.form.invalid) {

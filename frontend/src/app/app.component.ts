@@ -22,6 +22,7 @@ export class AppComponent implements OnInit, OnDestroy {
   termoBusca = '';
 
   mostrarFormulario = false;
+  motorEmEdicao: Motor | null = null;
   salvando = false;
 
   private readonly busca$ = new Subject<string>();
@@ -81,17 +82,28 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   abrirFormularioNovo(): void {
+    this.motorEmEdicao = null;
+    this.mostrarFormulario = true;
+  }
+
+  abrirFormularioEdicao(motor: Motor): void {
+    this.motorEmEdicao = motor;
     this.mostrarFormulario = true;
   }
 
   fecharFormulario(): void {
     this.mostrarFormulario = false;
+    this.motorEmEdicao = null;
   }
 
   salvarMotor(payload: MotorPayload): void {
     this.salvando = true;
 
-    this.motorService.criar(payload).subscribe({
+    const operacao = this.motorEmEdicao
+      ? this.motorService.atualizar(this.motorEmEdicao.id, payload)
+      : this.motorService.criar(payload);
+
+    operacao.subscribe({
       next: () => {
         this.salvando = false;
         this.fecharFormulario();
