@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+const helmet = require('helmet');
 const apiRoutes = require('./routes');
 const { notFoundHandler, errorHandler } = require('./middleware/errorHandler');
 
 function createApp() {
   const app = express();
 
+  app.use(helmet());
   app.use(
     cors({
       origin: process.env.CORS_ORIGIN || 'http://localhost:4200',

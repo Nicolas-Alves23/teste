@@ -19,5 +19,23 @@ services:
       retries: 20
       start_period: 30s
 
+  backend:
+    build:
+      context: ./backend
+    restart: unless-stopped
+    environment:
+      PORT: 3000
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_USER: ${MYSQL_USER:-motores_user}
+      DB_PASSWORD: ${MYSQL_PASSWORD:-motores_pass}
+      DB_NAME: ${MYSQL_DATABASE:-motores_db}
+      CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4200}
+    ports:
+      - "${BACKEND_PORT:-3000}:3000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
 volumes:
   motores_mysql_data:
