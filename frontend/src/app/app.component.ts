@@ -1,7 +1,9 @@
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Subject } from 'rxjs';
 import { debounceTime, distinctUntilChanged, switchMap } from 'rxjs/operators';
+import { ApiErrorResponse } from './core/models/api-error.model';
 import { Fabricante } from './core/models/fabricante.model';
 import { Motor, MotorPayload } from './core/models/motor.model';
 import { FabricanteService } from './core/services/fabricante.service';
@@ -24,9 +26,14 @@ export class AppComponent implements OnInit, OnDestroy {
   mostrarFormulario = false;
   motorEmEdicao: Motor | null = null;
   salvando = false;
+  erroCodigoDuplicado = false;
+  errosServidor: string[] = [];
 
   motorParaExcluir: Motor | null = null;
   excluindo = false;
+
+  mensagemSucesso: string | null = null;
+  mensagemErroGeral: string | null = null;
 
   private readonly busca$ = new Subject<string>();
 
@@ -38,6 +45,7 @@ export class AppComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.fabricanteService.listar().subscribe({
       next: (fabricantes) => (this.fabricantes = fabricantes),
+      error: () => (this.mensagemErroGeral = 'Não foi possível carregar os fabricantes.'),
     });
 
     this.busca$
@@ -56,6 +64,7 @@ export class AppComponent implements OnInit, OnDestroy {
         },
         error: () => {
           this.carregando = false;
+          this.mensagemErroGeral = 'Não foi possível carregar os motores.';
         },
       });
 
@@ -75,6 +84,7 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.carregando = false;
+        this.mensagemErroGeral = 'Não foi possível carregar os motores.';
       },
     });
   }
@@ -86,21 +96,29 @@ export class AppComponent implements OnInit, OnDestroy {
 
   abrirFormularioNovo(): void {
     this.motorEmEdicao = null;
+    this.erroCodigoDuplicado = false;
+    this.errosServidor = [];
     this.mostrarFormulario = true;
   }
 
   abrirFormularioEdicao(motor: Motor): void {
     this.motorEmEdicao = motor;
+    this.erroCodigoDuplicado = false;
+    this.errosServidor = [];
     this.mostrarFormulario = true;
   }
 
   fecharFormulario(): void {
     this.mostrarFormulario = false;
     this.motorEmEdicao = null;
+    this.erroCodigoDuplicado = false;
+    this.errosServidor = [];
   }
 
   salvarMotor(payload: MotorPayload): void {
     this.salvando = true;
+    this.erroCodigoDuplicado = false;
+    this.errosServidor = [];
 
     const operacao = this.motorEmEdicao
       ? this.motorService.atualizar(this.motorEmEdicao.id, payload)
@@ -109,13 +127,34 @@ export class AppComponent implements OnInit, OnDestroy {
     operacao.subscribe({
       next: () => {
         this.salvando = false;
+        this.mensagemSucesso = this.motorEmEdicao
+          ? 'Motor atualizado com sucesso.'
+          : 'Motor cadastrado com sucesso.';
         this.fecharFormulario();
         this.carregarMotores();
+        this.ocultarMensagemSucesso();
       },
-      error: () => {
+      error: (err: HttpErrorResponse) => {
         this.salvando = false;
+        this.tratarErroSalvar(err);
       },
     });
+  }
+
+  private tratarErroSalvar(err: HttpErrorResponse): void {
+    const corpo = err.error as ApiErrorResponse | undefined;
+
+    if (err.status === 409) {
+      this.erroCodigoDuplicado = true;
+      return;
+    }
+
+    if (err.status === 400 && corpo?.details) {
+      this.errosServidor = corpo.details;
+      return;
+    }
+
+    this.errosServidor = [corpo?.error ?? 'Erro inesperado ao salvar o motor.'];
   }
 
   pedirConfirmacaoExclusao(motor: Motor): void {
@@ -136,12 +175,19 @@ export class AppComponent implements OnInit, OnDestroy {
       next: () => {
         this.excluindo = false;
         this.motorParaExcluir = null;
+        this.mensagemSucesso = 'Motor excluído com sucesso.';
         this.carregarMotores();
+        this.ocultarMensagemSucesso();
       },
       error: () => {
         this.excluindo = false;
         this.motorParaExcluir = null;
+        this.mensagemErroGeral = 'Não foi possível excluir o motor.';
       },
     });
+  }
+
+  private ocultarMensagemSucesso(): void {
+    setTimeout(() => (this.mensagemSucesso = null), 3000);
   }
 }

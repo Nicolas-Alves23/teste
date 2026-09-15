@@ -72,3 +72,21 @@
   background: #eee;
   color: #333;
 }
+
+.alerta {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.alerta.erro {
+  background: #fdecea;
+  color: #b00020;
+  border: 1px solid #f5c6cb;
+}
+
+.alerta ul {
+  margin: 0.35rem 0 0;
+  padding-left: 1.2rem;
+}

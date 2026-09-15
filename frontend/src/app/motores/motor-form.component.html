@@ -1,13 +1,21 @@
 <div class="form-card">
   <h2>{{ editando ? 'Editar motor' : 'Novo motor' }}</h2>
 
+  <div class="alerta erro" *ngIf="errosServidor.length">
+    <strong>Não foi possível salvar:</strong>
+    <ul>
+      <li *ngFor="let msg of errosServidor">{{ msg }}</li>
+    </ul>
+  </div>
+
   <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
     <div class="grid">
       <div class="campo">
         <label for="codigo">Código *</label>
         <input id="codigo" type="text" formControlName="codigo" maxlength="30" />
         <small class="erro-campo" *ngIf="form.controls.codigo.invalid && form.controls.codigo.touched">
-          Código é obrigatório.
+          <span *ngIf="form.controls.codigo.errors?.['required']">Código é obrigatório.</span>
+          <span *ngIf="form.controls.codigo.errors?.['duplicado']">Este código já está cadastrado.</span>
         </small>
       </div>
 

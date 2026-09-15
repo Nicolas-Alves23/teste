@@ -141,3 +141,33 @@ tbody tr:hover {
   gap: 0.75rem;
   justify-content: flex-end;
 }
+
+.alerta {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.alerta.sucesso {
+  background: #e6f4ea;
+  color: #1e7e34;
+  border: 1px solid #c3e6cb;
+}
+
+.alerta.erro {
+  background: #fdecea;
+  color: #b00020;
+  border: 1px solid #f5c6cb;
+}
+
+.alerta .fechar {
+  background: none;
+  border: none;
+  color: inherit;
+  font-size: 1.1rem;
+  cursor: pointer;
+}

@@ -25,6 +25,8 @@ export class MotorFormComponent implements OnChanges {
   @Input() motor: Motor | null = null;
   @Input() fabricantes: Fabricante[] = [];
   @Input() salvando = false;
+  @Input() erroCodigoDuplicado = false;
+  @Input() errosServidor: string[] = [];
 
   @Output() salvar = new EventEmitter<MotorPayload>();
   @Output() cancelar = new EventEmitter<void>();
@@ -51,6 +53,10 @@ export class MotorFormComponent implements OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['motor']) {
       this.preencherFormulario(this.motor);
+    }
+
+    if (changes['erroCodigoDuplicado'] && this.erroCodigoDuplicado) {
+      this.form.controls.codigo.setErrors({ duplicado: true });
     }
   }
 

@@ -6,11 +6,19 @@
     </button>
   </header>
 
+  <div class="alerta sucesso" *ngIf="mensagemSucesso">{{ mensagemSucesso }}</div>
+  <div class="alerta erro" *ngIf="mensagemErroGeral">
+    {{ mensagemErroGeral }}
+    <button type="button" class="fechar" (click)="mensagemErroGeral = null">×</button>
+  </div>
+
   <app-motor-form
     *ngIf="mostrarFormulario"
     [motor]="motorEmEdicao"
     [fabricantes]="fabricantes"
     [salvando]="salvando"
+    [erroCodigoDuplicado]="erroCodigoDuplicado"
+    [errosServidor]="errosServidor"
     (salvar)="salvarMotor($event)"
     (cancelar)="fecharFormulario()"
   ></app-motor-form>
