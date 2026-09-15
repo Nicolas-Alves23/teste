@@ -1,4 +1,5 @@
 const { pool } = require('../config/db');
+const { validateMotorInput } = require('../validators/motor.validator');
 const { ApiError } = require('../middleware/errorHandler');
 
 const SELECT_BASE = `
@@ -45,8 +46,55 @@ async function buscarMotorPorId(req, res, next) {
   }
 }
 
+async function fabricanteExiste(fabricanteId) {
+  const [rows] = await pool.query('SELECT id FROM fabricantes WHERE id = ?', [fabricanteId]);
+  return rows.length > 0;
+}
+
+async function criarMotor(req, res, next) {
+  try {
+    const { details, values } = validateMotorInput(req.body);
+
+    if (values.fabricante_id !== null && !(await fabricanteExiste(values.fabricante_id))) {
+      details.push('fabricante_id não existe');
+    }
+
+    if (details.length > 0) {
+      throw new ApiError(400, 'Dados inválidos', details);
+    }
+
+    const [result] = await pool.query(
+      `INSERT INTO motores
+        (codigo, modelo, fabricante_id, potencia_cv, tensao, frequencia_hz, polos, rotacao_rpm, carcaca, grau_protecao, preco)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        values.codigo,
+        values.modelo,
+        values.fabricante_id,
+        values.potencia_cv,
+        values.tensao,
+        values.frequencia_hz,
+        values.polos,
+        values.rotacao_rpm,
+        values.carcaca,
+        values.grau_protecao,
+        values.preco,
+      ]
+    );
+
+    const [rows] = await pool.query(`${SELECT_BASE} WHERE m.id = ?`, [result.insertId]);
+    return res.status(201).json(rows[0]);
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return next(new ApiError(409, 'Código já cadastrado'));
+    }
+    return next(err);
+  }
+}
+
 module.exports = {
   SELECT_BASE,
   listarMotores,
   buscarMotorPorId,
+  criarMotor,
 };
