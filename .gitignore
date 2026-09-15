@@ -1,0 +1,17 @@
+# Ambiente
+.env
+
+# Node
+node_modules/
+npm-debug.log*
+
+# Angular
+frontend/dist/
+frontend/.angular/
+frontend/out-tsc/
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
