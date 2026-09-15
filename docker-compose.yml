@@ -1,0 +1,23 @@
+services:
+  mysql:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-motores_db}
+      MYSQL_USER: ${MYSQL_USER:-motores_user}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-motores_pass}
+    ports:
+      - "3306:3306"
+    volumes:
+      - motores_mysql_data:/var/lib/mysql
+      - ./backend/db/init:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 30s
+
+volumes:
+  motores_mysql_data:
