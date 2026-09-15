@@ -142,10 +142,27 @@ async function atualizarMotor(req, res, next) {
   }
 }
 
+async function excluirMotor(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const [existentes] = await pool.query('SELECT id FROM motores WHERE id = ?', [id]);
+    if (existentes.length === 0) {
+      throw new ApiError(404, 'Motor não encontrado');
+    }
+
+    await pool.query('DELETE FROM motores WHERE id = ?', [id]);
+    return res.status(204).send();
+  } catch (err) {
+    return next(err);
+  }
+}
+
 module.exports = {
   SELECT_BASE,
   listarMotores,
   buscarMotorPorId,
   criarMotor,
   atualizarMotor,
+  excluirMotor,
 };
