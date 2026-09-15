@@ -1,1 +1,46 @@
-<p>Cadastro de Motores Elétricos</p>
+<main class="container">
+  <header class="topo">
+    <h1>Cadastro de Motores Elétricos</h1>
+  </header>
+
+  <section class="tabela-wrapper">
+    <div class="estado" *ngIf="carregando">Carregando...</div>
+
+    <table *ngIf="!carregando && motores.length > 0">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Modelo</th>
+          <th>Fabricante</th>
+          <th>Potência (CV)</th>
+          <th>Tensão</th>
+          <th>Freq. (Hz)</th>
+          <th>Polos</th>
+          <th>Rotação (RPM)</th>
+          <th>Carcaça</th>
+          <th>Grau proteção</th>
+          <th>Preço (R$)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let motor of motores">
+          <td>{{ motor.codigo }}</td>
+          <td>{{ motor.modelo }}</td>
+          <td>{{ motor.fabricante_nome }}</td>
+          <td>{{ motor.potencia_cv }}</td>
+          <td>{{ motor.tensao }}</td>
+          <td>{{ motor.frequencia_hz }}</td>
+          <td>{{ motor.polos }}</td>
+          <td>{{ motor.rotacao_rpm }}</td>
+          <td>{{ motor.carcaca || '-' }}</td>
+          <td>{{ motor.grau_protecao || '-' }}</td>
+          <td>{{ motor.preco != null ? (motor.preco | number: '1.2-2') : '-' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="estado" *ngIf="!carregando && motores.length === 0">
+      Nenhum motor encontrado.
+    </div>
+  </section>
+</main>
