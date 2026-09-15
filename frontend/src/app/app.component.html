@@ -3,6 +3,15 @@
     <h1>Cadastro de Motores Elétricos</h1>
   </header>
 
+  <section class="busca">
+    <input
+      type="text"
+      placeholder="Buscar por código ou modelo..."
+      [value]="termoBusca"
+      (input)="onBuscar($any($event.target).value)"
+    />
+  </section>
+
   <section class="tabela-wrapper">
     <div class="estado" *ngIf="carregando">Carregando...</div>
 
