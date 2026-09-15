@@ -92,9 +92,60 @@ async function criarMotor(req, res, next) {
   }
 }
 
+async function atualizarMotor(req, res, next) {
+  try {
+    const { id } = req.params;
+
+    const [existentes] = await pool.query('SELECT id FROM motores WHERE id = ?', [id]);
+    if (existentes.length === 0) {
+      throw new ApiError(404, 'Motor não encontrado');
+    }
+
+    const { details, values } = validateMotorInput(req.body);
+
+    if (values.fabricante_id !== null && !(await fabricanteExiste(values.fabricante_id))) {
+      details.push('fabricante_id não existe');
+    }
+
+    if (details.length > 0) {
+      throw new ApiError(400, 'Dados inválidos', details);
+    }
+
+    await pool.query(
+      `UPDATE motores SET
+        codigo = ?, modelo = ?, fabricante_id = ?, potencia_cv = ?, tensao = ?,
+        frequencia_hz = ?, polos = ?, rotacao_rpm = ?, carcaca = ?, grau_protecao = ?, preco = ?
+       WHERE id = ?`,
+      [
+        values.codigo,
+        values.modelo,
+        values.fabricante_id,
+        values.potencia_cv,
+        values.tensao,
+        values.frequencia_hz,
+        values.polos,
+        values.rotacao_rpm,
+        values.carcaca,
+        values.grau_protecao,
+        values.preco,
+        id,
+      ]
+    );
+
+    const [rows] = await pool.query(`${SELECT_BASE} WHERE m.id = ?`, [id]);
+    return res.status(200).json(rows[0]);
+  } catch (err) {
+    if (err.code === 'ER_DUP_ENTRY') {
+      return next(new ApiError(409, 'Código já cadastrado'));
+    }
+    return next(err);
+  }
+}
+
 module.exports = {
   SELECT_BASE,
   listarMotores,
   buscarMotorPorId,
   criarMotor,
+  atualizarMotor,
 };
