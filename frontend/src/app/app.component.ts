@@ -25,6 +25,9 @@ export class AppComponent implements OnInit, OnDestroy {
   motorEmEdicao: Motor | null = null;
   salvando = false;
 
+  motorParaExcluir: Motor | null = null;
+  excluindo = false;
+
   private readonly busca$ = new Subject<string>();
 
   constructor(
@@ -111,6 +114,33 @@ export class AppComponent implements OnInit, OnDestroy {
       },
       error: () => {
         this.salvando = false;
+      },
+    });
+  }
+
+  pedirConfirmacaoExclusao(motor: Motor): void {
+    this.motorParaExcluir = motor;
+  }
+
+  cancelarExclusao(): void {
+    this.motorParaExcluir = null;
+  }
+
+  confirmarExclusao(): void {
+    if (!this.motorParaExcluir) return;
+
+    this.excluindo = true;
+    const id = this.motorParaExcluir.id;
+
+    this.motorService.excluir(id).subscribe({
+      next: () => {
+        this.excluindo = false;
+        this.motorParaExcluir = null;
+        this.carregarMotores();
+      },
+      error: () => {
+        this.excluindo = false;
+        this.motorParaExcluir = null;
       },
     });
   }

@@ -59,6 +59,9 @@
           <td>{{ motor.preco != null ? (motor.preco | number: '1.2-2') : '-' }}</td>
           <td class="acoes-tabela">
             <button type="button" class="link" (click)="abrirFormularioEdicao(motor)">Editar</button>
+            <button type="button" class="link perigo" (click)="pedirConfirmacaoExclusao(motor)">
+              Excluir
+            </button>
           </td>
         </tr>
       </tbody>
@@ -68,4 +71,21 @@
       Nenhum motor encontrado.
     </div>
   </section>
+
+  <div class="modal-fundo" *ngIf="motorParaExcluir">
+    <div class="modal">
+      <p>
+        Tem certeza que deseja excluir o motor
+        <strong>{{ motorParaExcluir.codigo }} - {{ motorParaExcluir.modelo }}</strong>?
+      </p>
+      <div class="acoes">
+        <button type="button" class="btn secundario" (click)="cancelarExclusao()" [disabled]="excluindo">
+          Cancelar
+        </button>
+        <button type="button" class="btn perigo" (click)="confirmarExclusao()" [disabled]="excluindo">
+          {{ excluindo ? 'Excluindo...' : 'Excluir' }}
+        </button>
+      </div>
+    </div>
+  </div>
 </main>
