@@ -1,7 +1,18 @@
 <main class="container">
   <header class="topo">
     <h1>Cadastro de Motores Elétricos</h1>
+    <button type="button" class="btn primario" (click)="abrirFormularioNovo()" *ngIf="!mostrarFormulario">
+      + Novo motor
+    </button>
   </header>
+
+  <app-motor-form
+    *ngIf="mostrarFormulario"
+    [fabricantes]="fabricantes"
+    [salvando]="salvando"
+    (salvar)="salvarMotor($event)"
+    (cancelar)="fecharFormulario()"
+  ></app-motor-form>
 
   <section class="busca">
     <input

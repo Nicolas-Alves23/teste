@@ -1,0 +1,120 @@
+<div class="form-card">
+  <h2>Novo motor</h2>
+
+  <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+    <div class="grid">
+      <div class="campo">
+        <label for="codigo">Código *</label>
+        <input id="codigo" type="text" formControlName="codigo" maxlength="30" />
+        <small class="erro-campo" *ngIf="form.controls.codigo.invalid && form.controls.codigo.touched">
+          Código é obrigatório.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="modelo">Modelo *</label>
+        <input id="modelo" type="text" formControlName="modelo" maxlength="80" />
+        <small class="erro-campo" *ngIf="form.controls.modelo.invalid && form.controls.modelo.touched">
+          Modelo é obrigatório.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="fabricante_id">Fabricante *</label>
+        <select id="fabricante_id" formControlName="fabricante_id">
+          <option [ngValue]="null">Selecione...</option>
+          <option *ngFor="let f of fabricantes" [ngValue]="f.id">{{ f.nome }}</option>
+        </select>
+        <small
+          class="erro-campo"
+          *ngIf="form.controls.fabricante_id.invalid && form.controls.fabricante_id.touched"
+        >
+          Selecione um fabricante.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="potencia_cv">Potência (CV) *</label>
+        <input id="potencia_cv" type="number" step="0.01" formControlName="potencia_cv" />
+        <small
+          class="erro-campo"
+          *ngIf="form.controls.potencia_cv.invalid && form.controls.potencia_cv.touched"
+        >
+          <span *ngIf="form.controls.potencia_cv.errors?.['required']">Potência é obrigatória.</span>
+          <span *ngIf="form.controls.potencia_cv.errors?.['min']">Potência deve ser maior que zero.</span>
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="tensao">Tensão *</label>
+        <input id="tensao" type="text" formControlName="tensao" placeholder="ex.: 220/380V" maxlength="30" />
+        <small class="erro-campo" *ngIf="form.controls.tensao.invalid && form.controls.tensao.touched">
+          Tensão é obrigatória.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="frequencia_hz">Frequência (Hz) *</label>
+        <select id="frequencia_hz" formControlName="frequencia_hz">
+          <option [ngValue]="null">Selecione...</option>
+          <option *ngFor="let f of frequencias" [ngValue]="f">{{ f }} Hz</option>
+        </select>
+        <small
+          class="erro-campo"
+          *ngIf="form.controls.frequencia_hz.invalid && form.controls.frequencia_hz.touched"
+        >
+          Selecione 50 ou 60 Hz.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="polos">Polos *</label>
+        <select id="polos" formControlName="polos">
+          <option [ngValue]="null">Selecione...</option>
+          <option *ngFor="let p of polosDisponiveis" [ngValue]="p">{{ p }}</option>
+        </select>
+        <small class="erro-campo" *ngIf="form.controls.polos.invalid && form.controls.polos.touched">
+          Selecione 2, 4, 6 ou 8 polos.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="rotacao_rpm">Rotação (RPM) *</label>
+        <input id="rotacao_rpm" type="number" formControlName="rotacao_rpm" />
+        <small
+          class="erro-campo"
+          *ngIf="form.controls.rotacao_rpm.invalid && form.controls.rotacao_rpm.touched"
+        >
+          Rotação deve ser maior que zero.
+        </small>
+      </div>
+
+      <div class="campo">
+        <label for="carcaca">Carcaça</label>
+        <input id="carcaca" type="text" formControlName="carcaca" placeholder="ex.: 132M" maxlength="20" />
+      </div>
+
+      <div class="campo">
+        <label for="grau_protecao">Grau de proteção</label>
+        <input id="grau_protecao" type="text" formControlName="grau_protecao" placeholder="ex.: IP55" maxlength="10" />
+      </div>
+
+      <div class="campo">
+        <label for="preco">Preço (R$)</label>
+        <input id="preco" type="number" step="0.01" formControlName="preco" />
+        <small class="erro-campo" *ngIf="form.controls.preco.invalid && form.controls.preco.touched">
+          Preço não pode ser negativo.
+        </small>
+      </div>
+    </div>
+
+    <div class="acoes">
+      <button type="button" class="btn secundario" (click)="onCancelar()" [disabled]="salvando">
+        Cancelar
+      </button>
+      <button type="submit" class="btn primario" [disabled]="salvando">
+        {{ salvando ? 'Salvando...' : 'Salvar' }}
+      </button>
+    </div>
+  </form>
+</div>
