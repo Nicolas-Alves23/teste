@@ -3,17 +3,17 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
-      MYSQL_DATABASE: ${MYSQL_DATABASE:-motores_db}
-      MYSQL_USER: ${MYSQL_USER:-motores_user}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD:-motores_pass}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?defina MYSQL_ROOT_PASSWORD no .env (veja .env.example)}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:?defina MYSQL_DATABASE no .env (veja .env.example)}
+      MYSQL_USER: ${MYSQL_USER:?defina MYSQL_USER no .env (veja .env.example)}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD:?defina MYSQL_PASSWORD no .env (veja .env.example)}
     ports:
       - "3306:3306"
     volumes:
       - motores_mysql_data:/var/lib/mysql
       - ./backend/db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD:-rootpass}"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
       interval: 5s
       timeout: 5s
       retries: 20
@@ -27,9 +27,9 @@ services:
       PORT: 3000
       DB_HOST: mysql
       DB_PORT: 3306
-      DB_USER: ${MYSQL_USER:-motores_user}
-      DB_PASSWORD: ${MYSQL_PASSWORD:-motores_pass}
-      DB_NAME: ${MYSQL_DATABASE:-motores_db}
+      DB_USER: ${MYSQL_USER:?defina MYSQL_USER no .env (veja .env.example)}
+      DB_PASSWORD: ${MYSQL_PASSWORD:?defina MYSQL_PASSWORD no .env (veja .env.example)}
+      DB_NAME: ${MYSQL_DATABASE:?defina MYSQL_DATABASE no .env (veja .env.example)}
       CORS_ORIGIN: ${CORS_ORIGIN:-http://localhost:4200}
     ports:
       - "${BACKEND_PORT:-3000}:3000"

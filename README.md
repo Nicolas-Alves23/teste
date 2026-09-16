@@ -33,14 +33,17 @@ Pré-requisito: Docker e Docker Compose instalados.
 ```bash
 git clone <url-do-repositorio>
 cd <pasta-do-repositorio>
+cp .env.example .env
 docker compose up -d --build
 ```
 
-Não é necessário nenhum passo manual antes disso — o compose já usa valores padrão
-mesmo sem um arquivo `.env` (veja `.env.example` caso queira customizar usuário/senha
-do banco, portas etc.). O banco é criado e populado automaticamente na primeira
-subida através dos scripts em `backend/db/init/` (montados em
-`/docker-entrypoint-initdb.d` do container MySQL).
+O `.env` é **obrigatório** — o `docker-compose.yml` não traz nenhuma credencial
+padrão embutida, apenas referencia as variáveis (`${MYSQL_PASSWORD:?...}`); sem o
+arquivo, o `docker compose up` falha com uma mensagem indicando qual variável falta.
+`.env.example` traz valores prontos para uso local e nunca é o `.env` real (que está
+no `.gitignore`). O banco é criado e populado automaticamente na primeira subida
+através dos scripts em `backend/db/init/` (montados em `/docker-entrypoint-initdb.d`
+do container MySQL).
 
 Depois que os containers estiverem de pé (o `backend` só inicia depois que o
 healthcheck do MySQL fica saudável, e ainda faz retentativa de conexão no código

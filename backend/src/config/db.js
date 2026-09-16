@@ -1,11 +1,19 @@
 const mysql = require('mysql2/promise');
 
+const REQUIRED_ENV_VARS = ['DB_USER', 'DB_PASSWORD', 'DB_NAME'];
+const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+if (missing.length > 0) {
+  throw new Error(
+    `Variáveis de ambiente obrigatórias não definidas: ${missing.join(', ')}. Configure um .env (veja .env.example).`
+  );
+}
+
 const pool = mysql.createPool({
   host: process.env.DB_HOST || 'localhost',
   port: Number(process.env.DB_PORT) || 3306,
-  user: process.env.DB_USER || 'motores_user',
-  password: process.env.DB_PASSWORD || 'motores_pass',
-  database: process.env.DB_NAME || 'motores_db',
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
